@@ -2,10 +2,23 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 
 const dynamicFederation = (scope, module) => {
-  return window[scope].get(module).then((factory) => {
-    const Module = factory();
-    return Module;
-  });
+    window[scope].override(Object.assign({
+        "react": () => {
+            return Promise.resolve().then(() => {
+                return () => require('react')
+            })
+        },
+        "react-dom": () => {
+            return Promise.resolve().then(() => {
+                return () => require('react-dom')
+            })
+        }
+    }, __webpack_require__.O));
+
+    return window[scope].get(module).then((factory) => {
+        const Module = factory();
+        return Module;
+    });
 };
 
 const RemoteButton = React.lazy(() =>

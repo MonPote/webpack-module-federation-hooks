@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 
 const ButtonWithHooks = () => {
   // FIXME - Uncomment this line and it will break
